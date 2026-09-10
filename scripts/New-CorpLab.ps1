@@ -65,7 +65,7 @@ foreach ($dept in $Departments) {
 }
 
 # Temporary lab password
-$Password = ConvertTo-SecureString "LabPassword123!" -AsPlainText -Force
+$Password = ConvertTo-SecureString "NOTHING_TO_SEE_HERE!" -AsPlainText -Force
 
 # Sample users
 $Users = @(
