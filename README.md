@@ -1,65 +1,40 @@
 # Cybersecurity Homelab
 
-## Goal
+A small enterprise-style lab for practicing Active Directory, Windows and Linux administration, networking, and security monitoring.
 
-Build a small enterprise-style cybersecurity environment to practice virtualization, Windows Server administration, Active Directory, Linux, networking, security monitoring, and incident response.
+## Lab Layout
 
-## Hardware
+| System | Role | Status |
+|---|---|---|
+| PC 1 — Proxmox | Hosts Windows Server DC01 and Ubuntu Server | Operational |
+| Personal PC — Hyper-V | Hosts a Windows 11 employee workstation | Operational |
+| PC 2 | Attacker system | Planned |
+| PC 3 | Centralized security monitoring | Planned |
 
-- 3x Intel Core i5-4690K desktop systems
-- Primary Proxmox host: 12 GB DDR3 RAM
-- Secondary systems: 8 GB DDR3 RAM each
-- ~120 GB SSDs
-- TP-Link Gigabit Ethernet switch
+The employee VM is joined to the lab domain. The personal PC’s Windows installation remains separate.
 
-## Current Environment
+## Technologies
 
-- Proxmox VE
-- Ubuntu Server
-- Windows Server 2025
-- Active Directory Domain Services
-- DNS
-- PowerShell automation
+Proxmox VE · Hyper-V · Windows Server 2025 · Windows 11 Pro · Ubuntu Server · Active Directory · DNS · Group Policy · PowerShell
 
-## Active Directory Domain
+## Completed
 
-Domain:
+- Deployed Windows and Linux server VMs.
+- Configured Active Directory and DNS.
+- Created department OUs, sample users, and security groups with PowerShell.
+- Joined an employee workstation to the domain and verified domain login.
+- Applied and verified a workstation security policy.
 
-`<redacted>.home.arpa`
+## Next Steps
 
-## Active Directory Structure
+- Configure departmental file shares and test access permissions.
+- Deploy Wazuh and Sysmon for security monitoring.
+- Establish lab network isolation and run controlled attack-and-detection exercises.
+- Practice backup, recovery, and server migration.
 
-- Corp-Users
-  - IT
-  - HR
-  - Finance
-  - Sales
-  - Engineering
-- Corp-Computers
-  - Workstations
-  - Servers
-- Groups
-- Service-Accounts
+## Project Files
 
-## Current Progress
-
-- Installed and updated Proxmox VE
-- Created Ubuntu Server VM
-- Configured SSH and Linux administration tools
-- Created Windows Server 2025 VM
-- Installed VirtIO storage and network drivers
-- Configured static networking
-- Installed Active Directory Domain Services
-- Promoted Windows Server to a Domain Controller
-- Created Organizational Units, users, and security groups with PowerShell
-
-## Planned Work
-
-- Deploy Windows client workstation
-- Join workstation to Active Directory
-- Configure Group Policy
-- Deploy centralized security monitoring
-- Install Sysmon
-- Deploy Wazuh
-- Add network monitoring and IDS
-- Perform controlled attack/detection exercises
+- [Documentation](docs/) — Setup notes, troubleshooting, and validation
+- [Scripts](scripts/) — Administration automation
+- [Screenshots](screenshots/) — Evidence of completed work
+- [Diagrams](diagrams/) — Lab architecture and networking
