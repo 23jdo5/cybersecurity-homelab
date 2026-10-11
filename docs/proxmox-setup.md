@@ -1,16 +1,19 @@
-
 # Proxmox Setup
 
 ## Objective
 
-Deploy a Proxmox VE virtualization host for the cybersecurity homelab.
+Deploy a Proxmox VE host for the cybersecurity homelab’s company servers.
 
 ## Hardware
 
-- Intel Core i5-4690K
-- 12 GB DDR3 RAM
-- ~120 GB SSD
-- Gigabit Ethernet
+| Component | Specification |
+|---|---|
+| Motherboard | ASUS H81M-P |
+| CPU | Intel Core i5-4440 |
+| Memory | 12 GB DDR3 RAM |
+| Storage | 120 GB SSD |
+| Networking | Gigabit Ethernet through a TP-Link switch |
+| Hostname | `pve01` |
 
 ## Installation
 
@@ -19,22 +22,62 @@ Deploy a Proxmox VE virtualization host for the cybersecurity homelab.
 3. Installed Proxmox VE onto the host SSD.
 4. Assigned the server a static IPv4 address.
 5. Configured the local router as the gateway and DNS resolver.
-6. Connected the server to the network through a gigabit Ethernet switch.
+6. Connected the server through the gigabit Ethernet switch.
 7. Accessed the Proxmox web interface remotely.
 8. Disabled enterprise repositories.
 9. Enabled the no-subscription repository.
-10. Updated and rebooted the Proxmox host.
+10. Updated and rebooted the host.
+
+## Virtual Machines
+
+| VM ID | System | Resources | Role |
+|---|---|---|---|
+| 100 | Ubuntu Server | 2 vCPUs, 2 GB RAM, 20 GB virtual disk | Linux administration and SSH |
+| 101 | DC01 — Windows Server 2025 | 2 vCPUs, 4 GB RAM, 50 GB virtual disk | Active Directory and DNS |
+
+Ubuntu was initially deployed to practice VM creation, Linux installation, updates, and SSH access. Its planned next role is a departmental file server.
+
+## Storage Layout
+
+- **local:** Directory storage used for installation ISOs and other supported content.
+- **local-lvm:** LVM-thin storage used for VM disks.
+
+At the recorded checkpoint:
+
+| Storage | Used | Total |
+|---|---:|---:|
+| local | 18.13 GB | 39.31 GB |
+| local-lvm | 31.91 GB | 52.47 GB |
+
+The two VM disks have a combined configured capacity of 70 GB. Thin provisioning allows them to consume physical storage as data is written, so configured capacity can exceed the storage pool’s size. Actual usage must be monitored to prevent the pool from filling.
+
+## Employee Workstation Placement
+
+The Windows 11 employee VM was deployed on the personal PC using Hyper-V because the Proxmox host had limited remaining storage.
+
+DC01 and Ubuntu remain on Proxmox. The employee VM connects to DC01 over the network.
 
 ## Troubleshooting
 
 ### Windows Server VM failed to boot
 
-The Windows Server VM initially remained at the Windows logo.
+**Problem:** The VM remained at the Windows logo.
 
-Solution:
+**Resolution:** Changed the VM’s CPU type to `host`.
 
-Changed the Proxmox VM CPU type to:
+**Validation:** Windows Server subsequently booted successfully.
 
-`host`
+## Open Follow-Up Items
 
-After changing the CPU model, Windows Server booted successfully.
+- Investigate DC01’s reported high memory usage.
+- Confirm clean shutdown behavior after the reported shutdown difficulty.
+- Monitor available storage as the server VMs grow.
+
+The causes of the memory and shutdown issues have not yet been established.
+
+## Planned Improvements
+
+- Configure and test VM backups.
+- Document a successful restore.
+- Review storage capacity before adding workloads.
+- Later migrate the company servers to another host, preserving backups and documenting a rollback plan.
