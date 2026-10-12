@@ -1,3 +1,4 @@
+<img width="996" height="668" alt="Screenshot 2026-10-11 170456" src="https://github.com/user-attachments/assets/ceae3653-594d-4a99-b761-d35e9d9e44f9" />
 # Windows Client Setup
 
 ## Objective
@@ -94,7 +95,7 @@ The server-side diagnosis and fix are documented in [Active Directory Lab](activ
 
 Screenshot location:
 
-`screenshots/domain-login-and-policy.png`
+<img width="996" height="668" alt="Screenshot 2026-10-11 170456" src="https://github.com/user-attachments/assets/bb9e8c3b-f929-4fb7-a043-0882228fd9cb" />
 
 The screenshot should show:
 
