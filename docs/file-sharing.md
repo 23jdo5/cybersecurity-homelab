@@ -225,13 +225,72 @@ Access was denied, confirming that the tested HR account could not access the En
 ### HR Access Denied
 <img width="1013" height="866" alt="Screenshot 2026-10-11 180717" src="https://github.com/user-attachments/assets/0910acde-ae3d-4d83-a836-1bdaecd4b3d7" />
 
+## DHCP Reservation and Reboot Validation
+
+Created a DHCP reservation on the Spectrum router for Ubuntu’s `ens18` interface using its MAC address and current IPv4 address.
+
+After restarting Ubuntu, verified that:
+
+- Ubuntu retained its reserved IPv4 address.
+- The employee workstation could still access the Engineering share.
+
+## Hostname Access and DNS Troubleshooting
+
+The share worked by IP address, but access through `ubuntu01.<domain>` initially failed.
+
+On the employee workstation, the following lookup returned `Non-existent domain`:
+
+```text
+nslookup ubuntu01.<domain>
+```
+
+### Investigation
+
+DNS Manager displayed the domain zones under Reverse Lookup Zones and did not provide the expected New Host menu option.
+
+Inspected the zone classification on DC01:
+
+```powershell
+Get-DnsServerZone | Format-Table ZoneName, ZoneType, IsReverseLookupZone
+```
+
+Both the domain zone and its `_msdcs` zone reported `IsReverseLookupZone = True`.
+
+### Resolution
+
+Created an A record directly through administrator PowerShell on DC01:
+
+```powershell
+$UbuntuIP = Read-Host "Enter Ubuntu's reserved IPv4 address"
+Add-DnsServerResourceRecordA -Name "ubuntu01" -ZoneName "<domain>" -IPv4Address $UbuntuIP
+```
+
+Replaced `<domain>` with the actual lab domain. Existing zones and records were preserved.
+
+Cleared the employee workstation’s DNS cache and repeated the lookup:
+
+```text
+ipconfig /flushdns
+nslookup ubuntu01.<domain>
+```
+
+The hostname resolved to Ubuntu’s reserved IPv4 address. Ethan then successfully accessed:
+
+```text
+\\ubuntu01.<domain>\Engineering
+```
+
+The missing host record was resolved. The zone classification itself was not changed.
+
 ## Outcome
 
-Ubuntu successfully serves a Windows-accessible shared folder using Active Directory identities. Engineering access and HR denial were validated with separate user sessions.
+- Ubuntu joined Active Directory and recognized domain users and groups.
+- Ethan from Engineering successfully created a file in the share.
+- Sarah from HR was denied access.
+- Ubuntu retained its reserved IP address after a reboot.
+- The share was successfully accessed using its DNS hostname.
 
 ## Remaining Work
 
-- Establish a stable file-server IP address through a DHCP reservation or static configuration.
-- Verify access using the server’s DNS name instead of its IP address.
 - Collect and monitor file-access events.
 - Back up the share and test restoration.
