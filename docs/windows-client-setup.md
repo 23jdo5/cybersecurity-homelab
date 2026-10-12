@@ -1,4 +1,3 @@
-<img width="996" height="668" alt="Screenshot 2026-10-11 170456" src="https://github.com/user-attachments/assets/ceae3653-594d-4a99-b761-d35e9d9e44f9" />
 # Windows Client Setup
 
 ## Objective
