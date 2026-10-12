@@ -2,7 +2,7 @@
 
 ## Objective
 
-Deploy a Windows Server domain controller, create a simulated corporate directory, and validate domain login and centrally managed workstation policies.
+Deploy a Windows Server domain controller, create a simulated corporate directory, and validate domain authentication, workstation policies, and departmental file access.
 
 ## Environment
 
@@ -14,6 +14,7 @@ Deploy a Windows Server domain controller, create a simulated corporate director
 | Server roles | Active Directory Domain Services and DNS |
 | Domain | `<redacted>.home.arpa` |
 | Employee workstation | Windows 11 Pro VM hosted in Hyper-V |
+| File server | Ubuntu Server with Samba and Winbind |
 
 ## Directory Structure
 
@@ -56,8 +57,8 @@ Sample users were assigned to their department OUs and security groups using Pow
 
 1. Created a Windows 11 Pro VM in Hyper-V.
 2. Configured its preferred DNS server to use DC01.
-3. Verified domain-controller discovery through the DNS SRV record:
-   ```powershell
+3. Verified domain-controller discovery:
+   ```text
    nslookup -type=SRV _ldap._tcp.dc._msdcs.<redacted>.home.arpa
    ```
 4. Joined the workstation to the domain and restarted it.
@@ -69,6 +70,8 @@ Sample users were assigned to their department OUs and security groups using Pow
 7. Moved the computer account into `Corp-Computers → Workstations`.
 
 Replace `<redacted>` with the actual domain label when running commands.
+
+Detailed client setup is documented in [Windows Client Setup](windows-client-setup.md).
 
 ## Workstation Group Policy
 
@@ -88,7 +91,7 @@ Computer Configuration
 
 Value: **900 seconds (15 minutes)**.
 
-On the workstation, refreshed policy:
+Refreshed policy on the workstation:
 
 ```text
 gpupdate /force
@@ -103,6 +106,35 @@ reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v In
 The returned value was `0x384`, equivalent to 900 seconds.
 
 The workstation locked earlier than 15 minutes during observation. The policy value was verified, but the cause of the earlier lock remains unconfirmed.
+
+## Ubuntu File Server Integration
+
+Joined Ubuntu to the domain using Samba and Winbind.
+
+Verified domain membership:
+
+```bash
+sudo net ads testjoin
+```
+
+Result:
+
+```text
+Join is OK
+```
+
+Confirmed that Ubuntu recognized Ethan’s domain account and membership in `GG_ENGINEERING`.
+
+Used that group to control access to the Engineering share:
+
+| Account | Department | Test | Result |
+|---|---|---|---|
+| Ethan Chen — `echen` | Engineering | Open the share and create a file | Allowed |
+| Sarah Miller — `smiller` | HR | Open the Engineering share | Denied |
+
+Added an A record for `ubuntu01` on DC01, pointing to Ubuntu’s reserved IPv4 address. Verified DNS resolution and access to the share by hostname.
+
+Full configuration and evidence are documented in [Samba File Sharing](file-sharing.md).
 
 ## Troubleshooting
 
@@ -160,22 +192,50 @@ These settings were applied to DC01 as the lab’s only domain controller, not t
 
 **Validation:** The employee could sign in without being granted administrator or Remote Desktop permissions.
 
+### Group Policy failed after the lab server was powered off
+
+**Problem:** A policy refresh stalled while DC01 was off. After restarting the server, the workstation also reported domain lookup and authentication errors.
+
+**Diagnosis:** Verified DC01’s DNS resolution, domain-controller discovery, matching clocks, and a healthy workstation secure channel.
+
+**Resolution:** With DC01 running, signed out of the employee session, signed back in, and repeated the policy refresh.
+
+**Validation:** Computer and user policy updates succeeded. The precise cause of the remaining session errors was not independently established.
+
+### Ubuntu hostname did not resolve
+
+**Problem:** The Engineering share worked by IP address, but the Ubuntu hostname returned `Non-existent domain`.
+
+**Diagnosis:** DNS Manager displayed the domain zones under Reverse Lookup Zones. PowerShell confirmed that both reported `IsReverseLookupZone = True`.
+
+**Resolution:** Added Ubuntu’s A record directly through PowerShell without deleting or recreating the existing zones, then cleared the workstation’s DNS cache.
+
+**Validation:** Ubuntu’s hostname resolved to its reserved IP address, and Ethan could access the share by hostname. The zone classification itself was not changed.
+
+Detailed commands and screenshots are recorded in [Samba File Sharing](file-sharing.md).
+
 ## Validation Summary
 
-- Workstation successfully joined the domain.
+- Employee workstation successfully joined the domain.
 - Engineering user successfully signed in.
 - `whoami` confirmed the domain identity.
 - Computer account was placed in the Workstations OU.
 - Computer and user Group Policy updates succeeded.
 - The screen-lock policy registry value matched the configured setting.
+- Ubuntu successfully joined the domain and recognized domain group membership.
+- Engineering write access and HR denial were verified.
+- Ubuntu’s DNS hostname resolved and supported share access.
 
 ## Evidence
 
-TBD
+The screenshot below shows the employee’s domain identity, successful Group Policy updates, and the configured inactivity limit.
 
+![Domain login and Group Policy verification](../screenshots/domain-login-and-policy.png)
+
+File-server membership, permissions, and access-test screenshots are included in [Samba File Sharing](file-sharing.md).
 
 ## Next Steps
 
-- Configure departmental file shares and test permissions.
 - Collect authentication and policy-related security events.
 - Forward logs to centralized monitoring.
+- Test domain-controller backup and recovery.
