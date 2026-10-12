@@ -212,19 +212,18 @@ Access was denied, confirming that the tested HR account could not access the En
 
 ### Domain Membership and Folder Permissions
 
-![Ubuntu domain membership and Engineering permissions](../screenshots/ubuntu-engineering-permissions.png)
+<img width="1279" height="863" alt="Screenshot 2026-10-11 175038" src="https://github.com/user-attachments/assets/76566073-f362-47ac-8b7d-f32cfd09e854" />
 
 ### Samba Configuration
+<img width="1278" height="863" alt="Screenshot 2026-10-11 175527" src="https://github.com/user-attachments/assets/40509f25-9781-4f45-8ff8-690539bf3e9c" />
 
-![Samba domain-member role and Engineering share configuration](../screenshots/samba-engineering-config.png)
 
 ### Engineering Access Allowed
+<img width="1012" height="858" alt="Screenshot 2026-10-11 180230" src="https://github.com/user-attachments/assets/a97c4d4f-f127-43d9-8415-4249af5c9c9a" />
 
-![Engineering user successfully created a shared file](../screenshots/engineering-share-allowed.png)
 
 ### HR Access Denied
-
-![HR user denied access to the Engineering share](../screenshots/engineering-share-denied-hr.png)
+<img width="1013" height="866" alt="Screenshot 2026-10-11 180717" src="https://github.com/user-attachments/assets/0910acde-ae3d-4d83-a836-1bdaecd4b3d7" />
 
 ## Outcome
 
