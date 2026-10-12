@@ -32,10 +32,12 @@ Deploy a Proxmox VE host for the cybersecurity homelab’s company servers.
 
 | VM ID | System | Resources | Role |
 |---|---|---|---|
-| 100 | Ubuntu Server | 2 vCPUs, 2 GB RAM, 20 GB virtual disk | Linux administration and SSH |
+| 100 | Ubuntu Server 26.04.1 LTS | 2 vCPUs, 2 GB RAM, 20 GB virtual disk | AD-integrated Samba file server |
 | 101 | DC01 — Windows Server 2025 | 2 vCPUs, 4 GB RAM, 50 GB virtual disk | Active Directory and DNS |
 
-Ubuntu was initially deployed to practice VM creation, Linux installation, updates, and SSH access. Its planned next role is a departmental file server.
+Ubuntu was initially deployed to practice VM creation, Linux installation, updates, and SSH access. It now hosts an Engineering file share authenticated through Active Directory.
+
+Configuration and access tests are documented in [Samba File Sharing](file-sharing.md).
 
 ## Storage Layout
 
@@ -49,13 +51,24 @@ At the recorded checkpoint:
 | local | 18.13 GB | 39.31 GB |
 | local-lvm | 31.91 GB | 52.47 GB |
 
-The two VM disks have a combined configured capacity of 70 GB. Thin provisioning allows them to consume physical storage as data is written, so configured capacity can exceed the storage pool’s size. Actual usage must be monitored to prevent the pool from filling.
+These figures are historical measurements, not live usage.
+
+The two VM disks have a combined configured capacity of 70 GB. Thin provisioning allows physical storage to be consumed as data is written, so configured capacity can exceed the pool’s size. Actual usage must be monitored to prevent the pool from filling.
 
 ## Employee Workstation Placement
 
 The Windows 11 employee VM was deployed on the personal PC using Hyper-V because the Proxmox host had limited remaining storage.
 
-DC01 and Ubuntu remain on Proxmox. The employee VM connects to DC01 over the network.
+DC01 and Ubuntu remain on Proxmox. The employee VM connects to their services over the network.
+
+See [Windows Client Setup](windows-client-setup.md) and [Lab Network Layout](network-layout.md).
+
+## Service Dependencies
+
+- DC01 provides domain authentication and DNS.
+- Ubuntu provides the Engineering file share.
+- Both VMs should be running during domain-authenticated file-sharing tests.
+- A running Proxmox host does not necessarily mean its guest VMs are running; their status must also be checked.
 
 ## Troubleshooting
 
