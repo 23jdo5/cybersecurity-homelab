@@ -230,7 +230,7 @@ Detailed commands and screenshots are recorded in [Samba File Sharing](file-shar
 
 The screenshot below shows the employee’s domain identity, successful Group Policy updates, and the configured inactivity limit.
 
-<img width="1279" height="863" alt="670971566-76566073-f362-47ac-8b7d-f32cfd09e854" src="https://github.com/user-attachments/assets/a6275689-e452-4e25-b727-e765655341b2" />
+<img width="996" height="668" alt="Screenshot 2026-10-11 170456" src="https://github.com/user-attachments/assets/30bf5c49-18fe-4f27-a966-234eb50c1095" />
 
 File-server membership, permissions, and access-test screenshots are included in [Samba File Sharing](file-sharing.md).
 
