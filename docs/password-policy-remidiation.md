@@ -54,16 +54,13 @@ After the assessment completed, the minimum password length check changed from *
 
 ### Before: Failed Wazuh check
 
-![Failed minimum password length check](../screenshots/wazuh-password-length-before.png)
-
+TBD
 ### Applied workstation policy
 
-![Workstation minimum password length set to 14](../screenshots/workstation-password-policy-after.png)
-
+TBD
 ### After: Passed Wazuh check
 
-![Passed minimum password length check](../screenshots/wazuh-password-length-after.png)
-
+TBD
 ## Result
 
 Remediated one security configuration finding and verified both the applied Windows policy and the updated Wazuh assessment.
